@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Click Bible Challenge</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+
+    <header>
+      <nav>
+        <div class="logo">
+          📖 Click Bible Challenge
+        </div>
+    
+        <div id="auth-buttons">
+          <button onclick="signInWithGoogle()">Se connecter avec Google</button>
+        </div>
+    
+        <div id="user-info" style="display: none; align-items: center; gap: 10px;">
+          <img id="user-photo" width="32" height="32" style="border-radius: 50%;" />
+          <span id="user-name" style="font-weight: bold;"></span>
+          <button onclick="signOut()">Se déconnecter</button>
+        </div>
+      </nav>
+    </header>
+
+    <div class="container">
+            <h1>📖 Click Bible Challenge</h1>
+      <form id="challengeForm">
+        <div>
+          <center>
+            <br>
+            Verset du jour : <strong id="verset"></strong>
+            <br>
+            <center />
+          </div>
+
+          <label for="date">📅 Date</label>
+          <input type="date" id="date" required />
+
+          <label for="passage">📖 Lecture du jour</label>
+          <input type="text" id="passage" placeholder="Ex: Genèse 1" required />
+
+          <label for="social">📱 Temps passé sur les réseaux</label>
+          <div style="display: flex; gap: 10px">
+            <input
+              type="number"
+              id="social"
+              placeholder="Durée"
+              required
+              style="flex: 2" />
+            <select id="socialUnit" style="flex: 1">
+              <option value="minutes">minutes</option>
+              <option value="heures">heures</option>
+            </select>
+          </div>
+
+          <label for="doneSelect">✅ Lecture faite</label>
+          <select id="doneSelect">
+            <option value="oui">Oui</option>
+            <option value="non">Non</option>
+          </select>
+
+          <label for="with">👥 Seul(e) ou avec quelqu’un ?</label>
+          <select id="with">
+            <option value>-- Choisis --</option>
+            <option value="Seul(e)">Seul(e)</option>
+            <option value="Avec quelqu’un">Avec quelqu’un</option>
+            <option value="En groupe">En groupe</option>
+          </select>
+
+          <label for="note">📝 Ce que j’ai retenu</label>
+          <textarea id="note" rows="3"></textarea>
+
+          <button type="submit">⭐ Enregistrer</button>
+          <div class="success" id="message"></div>
+        </form>
+
+        <div class="entries" id="entriesList"></div>
+      </div>
+
+      <script src="index.js"></script>
+
+      <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-app.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-auth.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-firestore.js"></script>
+
+      <script src="firebase.js"></script>
+
+      <script src="form.js"></script>
+  </body>
+</html>
