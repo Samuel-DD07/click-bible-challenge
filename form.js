@@ -3,19 +3,18 @@ const message = document.getElementById("message");
 const entriesList = document.getElementById("entriesList");
 
 let currentUser = null;
+let editingId = null;
 
-// 🔒 Attente que l'utilisateur se connecte
 auth.onAuthStateChanged(user => {
   if (user) {
     currentUser = user;
-    displayEntries(); // affiche ses données
+    displayEntries();
   } else {
     currentUser = null;
     entriesList.innerHTML = '<p>Connecte-toi pour voir tes lectures 📖</p>';
   }
 });
 
-// 📝 Enregistrement dans Firestore
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!currentUser) {
@@ -32,12 +31,20 @@ form.addEventListener("submit", async (e) => {
     done: document.getElementById("doneSelect").value,
     with: document.getElementById("with").value,
     note: document.getElementById("note").value,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   };
 
   try {
-    await db.collection("lectures").add(data);
-    message.textContent = "✅ Enregistré ! Tu peux continuer ✨";
+    if (editingId) {
+      await db.collection("lectures").doc(editingId).update(data);
+      message.textContent = "✏️ Modifié avec succès !";
+      editingId = null;
+    } else {
+      data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      await db.collection("lectures").add(data);
+      message.textContent = "✅ Enregistré ! Tu peux continuer ✨";
+    }
+
     form.reset();
     displayEntries();
   } catch (error) {
@@ -46,7 +53,6 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// 📋 Affichage des lectures
 async function displayEntries() {
   if (!currentUser) return;
 
@@ -78,7 +84,6 @@ async function displayEntries() {
   });
 }
 
-// 🗑 Supprimer
 async function deleteEntry(id) {
   try {
     await db.collection("lectures").doc(id).delete();
@@ -88,7 +93,6 @@ async function deleteEntry(id) {
   }
 }
 
-// ✏ Modifier (pré-remplir le formulaire)
 async function editEntry(id) {
   try {
     const doc = await db.collection("lectures").doc(id).get();
@@ -101,6 +105,9 @@ async function editEntry(id) {
     document.getElementById("doneSelect").value = data.done;
     document.getElementById("with").value = data.with;
     document.getElementById("note").value = data.note;
+
+    editingId = id;
+    message.textContent = "✏️ Tu modifies une entrée existante";
   } catch (error) {
     console.error("Erreur chargement :", error);
   }
